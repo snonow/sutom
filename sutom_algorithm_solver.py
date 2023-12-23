@@ -1,33 +1,38 @@
 import os
 
-
-def compare_words(lst_letters, word, lst_known_letters=None):
+def compare_words(lst_letters, word, lst_known_letters=[], lst_not_in_letters=[]):
     """
     Check if the word is in the list of words.
 
     Args:
         lst_letters (list): List of the right letters with the correct length.
-        lst_known_letters (list): List of known letters.
         word (str): The word to check.
+        lst_known_letters (list): List of known letters, initially at []
+        lst_not_in_letters (list): List of not in letters, initially at []
 
     Returns:
         bool: True if the word matches the criteria, False otherwise.
     """
-    #
-    if len(lst_letters) != len(word):
+    # Initiate
+    str_word = str(word)
+    
+    # Check if the word doesn't have the correct length
+    if len(lst_letters) != len(str_word):
         return False
-    # 
-    else :
-        for i in range(len(lst_letters)):
-            if lst_letters[i]!= word[i] and lst_letters[i] not in [0,'0',"0"]:
-                return False
-        if lst_known_letters != None:
-            for letter in lst_known_letters:
-                if letter not in word:
-                    return False
-        return True
     
+    # Initialize variables
+    i, letter = 0, str(lst_letters[i])
     
+    # Loop through the word and lst_letters
+    while i < len(lst_letters) and (letter == '0' or str_word[i] == letter):
+        if str_word[i] in str(lst_not_in_letters):
+            return False
+        i += 1
+        if i < len(lst_letters):
+            letter = str(lst_letters[i])
+    
+    # Check if the loop completed successfully
+    return i == len(lst_letters)
 
 def nb_of_unique_vowels(word):
     """
@@ -59,7 +64,6 @@ def nb_of_unique_consonants(word):
     return len(unique_consonants)
 
 
-
 def choose_word():
     """
     Choose the best word from the good possible words.
@@ -82,10 +86,9 @@ def choose_word():
             best_rate = rate   
             
     return best_word[:-1]
-         
 
 
-def solver_init(lst_letters):
+def solver_init(lst_letters, lst_known_letters=[], lst_not_in_letters=[]):
     """
     Initialize the algorithm.
 
@@ -102,11 +105,11 @@ def solver_init(lst_letters):
     
     with open(".temp_dic/temp_dict.txt", "w") as new_dic:
         for word in dic:
-            if compare_words(lst_letters, word[:-1]):
+            if compare_words(lst_letters, word[:-1], lst_known_letters, lst_not_in_letters):
                 new_dic.write(word)
 
 
-def main_solver(lst_letters, lst_known_letters):
+def main_solver(lst_letters, lst_known_letters=[], lst_not_in_letters=[]):
     """
     Algorithm that can solve custom and that will be called within custom_solver.py file.
 
@@ -119,11 +122,10 @@ def main_solver(lst_letters, lst_known_letters):
         str: Best word from the good possible words.
     """
     if not os.path.exists(".temp_dic/temp_dict.txt"):
-        solver_init(lst_letters)
+        solver_init(lst_letters, lst_known_letters, lst_not_in_letters)
         return choose_word()
-    
+
     else:
-        # Initialize the dictionary
         with open(".temp_dic/temp_dict.txt", "r") as temp_dic:
             lst_temp_dic = temp_dic.readlines()
 
@@ -132,11 +134,13 @@ def main_solver(lst_letters, lst_known_letters):
         # Initialize the new dictionary
         with open(".temp_dic/temp_dict.txt", "w") as new_temp_dic:
             for word in lst_temp_dic:
-                if compare_words(lst_letters, word[:-1], lst_known_letters):
+                if compare_words(lst_letters, word[:-1], lst_known_letters, lst_not_in_letters):
                     new_temp_dic.write(word)
         
+        if len(lst_temp_dic) < 10:
+            return (choose_word(), lst_temp_dic)
         return choose_word()
 
 # TEST
 os.remove(".temp_dic/temp_dict.txt")
-main_solver(list("00000"), [])
+main_solver(list("A000I0E0"), list("IPER"), list("MNESTIF"))
