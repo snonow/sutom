@@ -1,18 +1,5 @@
 import os
 
-def check_word_length(lst_letters, word):
-    """
-    Check if the word is the right length.
-
-    Args:
-        lst_letters (list): List of the right letters with the correct length.
-        word (str): The word to check.
-
-    Returns:
-        bool: True if the word has the correct length, False otherwise.
-    """
-    return len(lst_letters) == len(word)
-
 
 def compare_words(lst_letters, word, lst_known_letters=None):
     """
@@ -26,47 +13,51 @@ def compare_words(lst_letters, word, lst_known_letters=None):
     Returns:
         bool: True if the word matches the criteria, False otherwise.
     """
-    for i in range(len(lst_letters)):
-        if lst_letters[i] != 0:
-            print(lst_letters[i])
-            if lst_letters[i] != word[i]:
-                print(word)
+    #
+    if len(lst_letters) != len(word):
+        return False
+    # 
+    else :
+        for i in range(len(lst_letters)):
+            if lst_letters[i]!= word[i] and lst_letters[i] not in [0,'0',"0"]:
                 return False
+        if lst_known_letters != None:
+            for letter in lst_known_letters:
+                if letter not in word:
+                    return False
+        return True
     
-    if lst_known_letters != None:
-        for letter in lst_known_letters:
-            if letter not in word:
-                return False
     
-    return True
 
-
-def nb_of_vowels(word):
+def nb_of_unique_vowels(word):
     """
-    Count the number of vowels in the word.
+    Count the number of unique vowels in the word.
 
     Args:
-        word (str): The word to count the number of vowels.
+        word (str): The word to count the number of unique vowels.
 
     Returns:
-        int: The number of vowels in the word.
+        int: The number of unique vowels in the word.
     """
     vowels = set("aeiou")
-    return sum(1 for char in word if char.lower() in vowels)
+    unique_vowels = set(char.lower() for char in word if char.lower() in vowels)
+    return len(unique_vowels)
 
 
-def nb_of_consonants(word):
+def nb_of_unique_consonants(word):
     """
-    Count the number of consonants in the word.
+    Count the number of unique consonants in the word.
 
     Args:
-        word (str): The word to count the number of consonants.
+        word (str): The word to count the number of unique consonants.
 
     Returns:
-        int: The number of consonants in the word.
+        int: The number of unique consonants in the word.
     """
     consonants = set("bcdfghjklmnpqrstvwxyz")
-    return sum(1 for char in word if char.lower() in consonants)
+    unique_consonants = set(char.lower() for char in word if char.lower() in consonants)
+    return len(unique_consonants)
+
 
 
 def choose_word():
@@ -85,7 +76,7 @@ def choose_word():
     best_rate = 0
     
     for word in lst_words:
-        rate = nb_of_consonants(word) + nb_of_vowels(word)*10
+        rate = nb_of_unique_consonants(word) + nb_of_unique_vowels(word)*10
         if rate > best_rate:
             best_word = word
             best_rate = rate   
@@ -111,11 +102,8 @@ def solver_init(lst_letters):
     
     with open(".temp_dic/temp_dict.txt", "w") as new_dic:
         for word in dic:
-            if check_word_length(lst_letters, word[:-1]):
-                print('first phase ok')
-                if compare_words(lst_letters, [], word[:-1]):
-                    print('second phase ok')
-                    new_dic.write(word)
+            if compare_words(lst_letters, word[:-1]):
+                new_dic.write(word)
 
 
 def main_solver(lst_letters, lst_known_letters):
@@ -151,4 +139,4 @@ def main_solver(lst_letters, lst_known_letters):
 
 # TEST
 os.remove(".temp_dic/temp_dict.txt")
-main_solver(list("ABRICOT"), [])
+main_solver(list("00000"), [])
