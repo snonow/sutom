@@ -1,13 +1,12 @@
 import os
 
-def compare_words(lst_letters, word, lst_known_letters=[], lst_not_in_letters=[]):
+def compare_words(lst_letters, word, lst_not_in_letters=[]):
     """
     Check if the word is in the list of words.
 
     Args:
         lst_letters (list): List of the right letters with the correct length.
         word (str): The word to check.
-        lst_known_letters (list): List of known letters, initially at []
         lst_not_in_letters (list): List of not in letters, initially at []
 
     Returns:
@@ -21,10 +20,11 @@ def compare_words(lst_letters, word, lst_known_letters=[], lst_not_in_letters=[]
         return False
     
     # Initialize variables
-    i, letter = 0, str(lst_letters[i])
+    i = 0
+    letter = str(lst_letters[i])
     
     # Loop through the word and lst_letters
-    while i < len(lst_letters) and (letter == '0' or str_word[i] == letter):
+    while i < len(lst_letters) and (letter == "_" or str_word[i] == letter):
         if str_word[i] in str(lst_not_in_letters):
             return False
         i += 1
@@ -88,7 +88,7 @@ def choose_word():
     return best_word[:-1]
 
 
-def solver_init(lst_letters, lst_known_letters=[], lst_not_in_letters=[]):
+def solver_init(lst_letters, lst_not_in_letters=[]):
     """
     Initialize the algorithm.
 
@@ -105,24 +105,22 @@ def solver_init(lst_letters, lst_known_letters=[], lst_not_in_letters=[]):
     
     with open(".temp_dic/temp_dict.txt", "w") as new_dic:
         for word in dic:
-            if compare_words(lst_letters, word[:-1], lst_known_letters, lst_not_in_letters):
+            if compare_words(lst_letters, word[:-1], lst_not_in_letters):
                 new_dic.write(word)
 
 
-def main_solver(lst_letters, lst_known_letters=[], lst_not_in_letters=[]):
+def main_solver(lst_letters, lst_not_in_letters=[]):
     """
     Algorithm that can solve custom and that will be called within custom_solver.py file.
 
     Args:
         lst_letters (list): List of the right letters with the correct length.
-        lst_known_letters (list): List of good words that are part of the word 
-                        but that aren't in the first list.
     
     Returns:
         str: Best word from the good possible words.
     """
     if not os.path.exists(".temp_dic/temp_dict.txt"):
-        solver_init(lst_letters, lst_known_letters, lst_not_in_letters)
+        solver_init(lst_letters, lst_not_in_letters)
         return choose_word()
 
     else:
@@ -134,13 +132,11 @@ def main_solver(lst_letters, lst_known_letters=[], lst_not_in_letters=[]):
         # Initialize the new dictionary
         with open(".temp_dic/temp_dict.txt", "w") as new_temp_dic:
             for word in lst_temp_dic:
-                if compare_words(lst_letters, word[:-1], lst_known_letters, lst_not_in_letters):
+                if compare_words(lst_letters, word[:-1], lst_not_in_letters):
                     new_temp_dic.write(word)
         
         if len(lst_temp_dic) < 10:
+            with open(".temp_dic/temp_dict.txt", "r") as temp_dic:
+                lst_temp_dic = temp_dic.readlines()
             return (choose_word(), lst_temp_dic)
         return choose_word()
-
-# TEST
-os.remove(".temp_dic/temp_dict.txt")
-main_solver(list("A000I0E0"), list("IPER"), list("MNESTIF"))

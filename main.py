@@ -1,4 +1,7 @@
-from sutom_algorithm_solver import *
+import os
+from package.game_mode import main_game_mode
 
-main_solver(list("A000I0E0"),list("IPER"),list("MNESTIF"))
-os.remove(".temp_dic/temp_dict.txt")
+if __name__ == '__main__':
+    main_game_mode()
+    
+    
