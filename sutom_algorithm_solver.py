@@ -14,7 +14,7 @@ def check_word_length(lst_letters, word):
     return len(lst_letters) == len(word)
 
 
-def compare_words(lst_letters, lst_known_letters, word):
+def compare_words(lst_letters, word, lst_known_letters=None):
     """
     Check if the word is in the list of words.
 
@@ -27,12 +27,16 @@ def compare_words(lst_letters, lst_known_letters, word):
         bool: True if the word matches the criteria, False otherwise.
     """
     for i in range(len(lst_letters)):
-        if lst_letters[i] != word[i] and lst_letters[i] != 0:
-            return False
+        if lst_letters[i] != 0:
+            print(lst_letters[i])
+            if lst_letters[i] != word[i]:
+                print(word)
+                return False
     
-    for letter in lst_known_letters:
-        if letter not in word:
-            return False
+    if lst_known_letters != None:
+        for letter in lst_known_letters:
+            if letter not in word:
+                return False
     
     return True
 
@@ -140,11 +144,11 @@ def main_solver(lst_letters, lst_known_letters):
         # Initialize the new dictionary
         with open(".temp_dic/temp_dict.txt", "w") as new_temp_dic:
             for word in lst_temp_dic:
-                if compare_words(lst_letters, lst_known_letters, word[:-1]):
+                if compare_words(lst_letters, word[:-1], lst_known_letters):
                     new_temp_dic.write(word)
         
         return choose_word()
 
 # TEST
-
+os.remove(".temp_dic/temp_dict.txt")
 main_solver(list("ABRICOT"), [])
