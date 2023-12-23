@@ -5,5 +5,4 @@ class Solver():
         self.goodLetters = []
     
     
-        
     
