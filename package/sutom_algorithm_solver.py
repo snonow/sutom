@@ -1,38 +1,6 @@
 import os
+import package.compare_words
 
-def compare_words(lst_letters, word, lst_not_in_letters=[]):
-    """
-    Check if the word is in the list of words.
-
-    Args:
-        lst_letters (list): List of the right letters with the correct length.
-        word (str): The word to check.
-        lst_not_in_letters (list): List of not in letters, initially at []
-
-    Returns:
-        bool: True if the word matches the criteria, False otherwise.
-    """
-    # Initiate
-    str_word = str(word)
-    
-    # Check if the word doesn't have the correct length
-    if len(lst_letters) != len(str_word):
-        return False
-    
-    # Initialize variables
-    i = 0
-    letter = str(lst_letters[i])
-    
-    # Loop through the word and lst_letters
-    while i < len(lst_letters) and (letter == "_" or str_word[i] == letter):
-        if str_word[i] in str(lst_not_in_letters):
-            return False
-        i += 1
-        if i < len(lst_letters):
-            letter = str(lst_letters[i])
-    
-    # Check if the loop completed successfully
-    return i == len(lst_letters)
 
 def nb_of_unique_vowels(word):
     """
@@ -88,7 +56,7 @@ def choose_word():
     return best_word[:-1]
 
 
-def solver_init(lst_letters, lst_not_in_letters=[]):
+def solver_init(lst_letters, lst_not_in_letters=[], missplaced_letters=[]):
     """
     Initialize the algorithm.
 
@@ -105,11 +73,11 @@ def solver_init(lst_letters, lst_not_in_letters=[]):
     
     with open(".temp_dic/temp_dict.txt", "w") as new_dic:
         for word in dic:
-            if compare_words(lst_letters, word[:-1], lst_not_in_letters):
+            if package.compare_words.main(lst_letters, word[:-1], lst_not_in_letters, missplaced_letters):
                 new_dic.write(word)
 
 
-def main_solver(lst_letters, lst_not_in_letters=[]):
+def main_solver(lst_letters, lst_not_in_letters=[], missplaced_letters=[]):
     """
     Algorithm that can solve custom and that will be called within custom_solver.py file.
 
@@ -119,9 +87,11 @@ def main_solver(lst_letters, lst_not_in_letters=[]):
     Returns:
         str: Best word from the good possible words.
     """
-    if not os.path.exists(".temp_dic/temp_dict.txt"):
-        solver_init(lst_letters, lst_not_in_letters)
-        return choose_word()
+    if (not os.path.exists(".temp_dic/temp_dict.txt")) or (lst_not_in_letters == [] and missplaced_letters == []):
+        if os.path.exists(".temp_dic/temp_dict.txt"):
+            os.remove(".temp_dic/temp_dict.txt")
+        solver_init(lst_letters, lst_not_in_letters, missplaced_letters)
+        return (choose_word(), False)
 
     else:
         with open(".temp_dic/temp_dict.txt", "r") as temp_dic:
@@ -132,11 +102,10 @@ def main_solver(lst_letters, lst_not_in_letters=[]):
         # Initialize the new dictionary
         with open(".temp_dic/temp_dict.txt", "w") as new_temp_dic:
             for word in lst_temp_dic:
-                if compare_words(lst_letters, word[:-1], lst_not_in_letters):
+                if package.compare_words.main(lst_letters, word[:-1], lst_not_in_letters, missplaced_letters):
                     new_temp_dic.write(word)
         
-        if len(lst_temp_dic) < 10:
-            with open(".temp_dic/temp_dict.txt", "r") as temp_dic:
-                lst_temp_dic = temp_dic.readlines()
-            return (choose_word(), lst_temp_dic)
-        return choose_word()
+        if len(lst_temp_dic) == 1:
+            return (choose_word(), True)
+        
+        return (choose_word(), False)
