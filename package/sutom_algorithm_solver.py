@@ -1,35 +1,6 @@
 import os
-import package.compare_words
-
-
-def nb_of_unique_vowels(word):
-    """
-    Count the number of unique vowels in the word.
-
-    Args:
-        word (str): The word to count the number of unique vowels.
-
-    Returns:
-        int: The number of unique vowels in the word.
-    """
-    vowels = set("aeiou")
-    unique_vowels = set(char.lower() for char in word if char.lower() in vowels)
-    return len(unique_vowels)
-
-
-def nb_of_unique_consonants(word):
-    """
-    Count the number of unique consonants in the word.
-
-    Args:
-        word (str): The word to count the number of unique consonants.
-
-    Returns:
-        int: The number of unique consonants in the word.
-    """
-    consonants = set("bcdfghjklmnpqrstvwxyz")
-    unique_consonants = set(char.lower() for char in word if char.lower() in consonants)
-    return len(unique_consonants)
+import package.compare_words as compare_words
+import package.letter_choosing as letter_choosing
 
 
 def choose_word():
@@ -48,7 +19,7 @@ def choose_word():
     best_rate = 0
     
     for word in lst_words:
-        rate = nb_of_unique_consonants(word) + nb_of_unique_vowels(word)*10
+        rate = letter_choosing.word_rate_calc(word[:-1])
         if rate > best_rate:
             best_word = word
             best_rate = rate   
@@ -73,7 +44,7 @@ def solver_init(lst_letters, lst_not_in_letters=[], missplaced_letters=[]):
     
     with open(".temp_dic/temp_dict.txt", "w") as new_dic:
         for word in dic:
-            if package.compare_words.main(lst_letters, word[:-1], lst_not_in_letters, missplaced_letters):
+            if compare_words.main(lst_letters, word[:-1], lst_not_in_letters, missplaced_letters):
                 new_dic.write(word)
 
 
@@ -102,7 +73,7 @@ def main_solver(lst_letters, lst_not_in_letters=[], missplaced_letters=[]):
         # Initialize the new dictionary
         with open(".temp_dic/temp_dict.txt", "w") as new_temp_dic:
             for word in lst_temp_dic:
-                if package.compare_words.main(lst_letters, word[:-1], lst_not_in_letters, missplaced_letters):
+                if compare_words.main(lst_letters, word[:-1], lst_not_in_letters, missplaced_letters):
                     new_temp_dic.write(word)
         
         if len(lst_temp_dic) == 1:
