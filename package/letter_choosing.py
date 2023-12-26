@@ -30,7 +30,7 @@ frequence_lettres_fr = {
 }
 
 
-def word_rate_calc(word):
+def word_rate_calc_v2(word):
     """
     Calculate the word rate.
 
@@ -40,10 +40,25 @@ def word_rate_calc(word):
     Returns:
         int: The word rate.
     """
-    rate = 0
+    dic_rate, rate = {}, 0
     for letter in list(word):
-        rate += frequence_lettres_fr[letter]
+        if not letter in dic_rate:
+            dic_rate[letter] = frequence_lettres_fr[letter]
+    for letter in dic_rate.keys():
+        rate += dic_rate[letter]
     return rate
+
+def word_rate_calc(word):
+    """
+    Blablabla
+
+    Args:
+        word (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    return nb_of_unique_consonants(word) + nb_of_unique_vowels(word)
 
 def nb_of_unique_vowels(word):
     """

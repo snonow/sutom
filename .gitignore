@@ -1,5 +1,6 @@
 **/.git/
 temp_dict.txt
+**/__pycache__/
 
 # Python
 __pycache__/

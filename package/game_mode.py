@@ -79,35 +79,13 @@ def help_loop():
         user_input = str(input("What do you want to do? (help)\n"))
     return user_input
 
-
-
-def main_game_mode(user_input=None):
-    """
-    Function to determine the game mode based on user input.
-    """
-    if user_input is None:
-        user_input = str(input("What do you want to do? (help)\n"))
-
-    if user_input == "help":
-        help_loop()
-        main_game_mode()
-
-    elif user_input == "M":
-        print("Good luck with your Sutom game!\n")
-        main_sutom()
-
-    elif user_input == "S":
-        print("Launching the solver.\n")
-        while True:
-            solver_input = str(input("What does the word you're looking for look like?\n"
-                                      "(Enter \"help\" to see the required syntax)\n"))
-            if solver_input == "help":
-                print("Syntax:\n",
-                      "Enter the known letters and the unknown letters as \"_\"\n",
-                      "Enter forbidden letters all together.\n",
-                      "Enter misplaced letters all together.\n"
-                      "Separate these two parts by a space \" \".\n")
-            else:
+def sutom_algo_game_mode():
+    while True:
+        input = sutom_algo_game_mode_init()
+        if input == "exit":
+            break
+        elif not isinstance(input, None):
+            while True:
                 try:
                     check_syntax_init(solver_input)
                     known_letters = solver_input
@@ -127,6 +105,47 @@ def main_game_mode(user_input=None):
                     break
                 except ValueError as e:
                     print(f"Syntax error: {e}")
+                sutom_algo_game_mode(solver_input)
+                    
+                
+def sutom_algo_game_mode_init():
+    solver_input = str(input("What does the word you're looking for look like?\n"
+                             "(Enter \"help\" to see the required syntax)\n"))
+    if solver_input == "help":
+        print("Syntax:\n",
+              "Enter the known letters and the unknown letters as \"_\"\n\n")
+        return None
+    else:
+        return solver_input
+    
+def sutom_algo_game_mode(solver_input):
+    if solver_input == "help":
+        print("Syntax:\n",
+            "Enter the known letters and the unknown letters as \"_\"\n",
+            "Enter forbidden letters all together.\n",
+            "Enter misplaced letters all together.\n"
+            "Separate these two parts by a space \" \".\n")
+     
+
+
+def main_game_mode(user_input=None):
+    """
+    Function to determine the game mode based on user input.
+    """
+    if user_input is None:
+        user_input = str(input("What do you want to do? (help)\n"))
+
+    if user_input == "help":
+        help_loop()
+        main_game_mode()
+
+    elif user_input == "M":
+        print("Good luck with your Sutom game!\n")
+        main_sutom()
+
+    elif user_input == "S":
+        print("Launching the solver.\n")
+        sutom_algo_game_mode()
 
     elif user_input == "A":
         main_solver()

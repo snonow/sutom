@@ -75,8 +75,9 @@ def main_solver(lst_letters, lst_not_in_letters=[], missplaced_letters=[]):
             for word in lst_temp_dic:
                 if compare_words.main(lst_letters, word[:-1], lst_not_in_letters, missplaced_letters):
                     new_temp_dic.write(word)
+            lst_new_temp_dic = new_temp_dic.readlines()
         
-        if len(lst_temp_dic) == 1:
+        if len(lst_new_temp_dic) == 1:
             return (choose_word(), True)
         
         return (choose_word(), False)
