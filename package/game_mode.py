@@ -46,7 +46,7 @@ def check_syntax_in_loop(syntax):
         if len(parts) != 3:
             raise ValueError("Syntax must have exactly two parts separated by a space.")
 
-        known_letters, forbidden_letters, missplaced_letters  = parts
+        known_letters, forbidden_letters, missplaced_letters = parts
 
         # Check if known letters contain only letters and underscores
         if not all(c.isalpha() or c == "_" for c in known_letters):
@@ -79,53 +79,6 @@ def help_loop():
         user_input = str(input("What do you want to do? (help)\n"))
     return user_input
 
-def sutom_algo_game_mode():
-    while True:
-        input = sutom_algo_game_mode_init()
-        if input == "exit":
-            break
-        elif not isinstance(input, None):
-            while True:
-                try:
-                    check_syntax_init(solver_input)
-                    known_letters = solver_input
-                    choosen_word, cond = main_solver(known_letters)
-                    while not cond:
-                        print(f"The word you're looking for looks like:\n{choosen_word}")
-                        solver_input = str(input("What does the word you're looking for look like?\n"))
-                        check_syntax_in_loop(solver_input)
-                        parts = solver_input.split(" ")
-                        known_letters, forbidden_letters, missplaced_letters = parts
-                        if forbidden_letters == "_":
-                            forbidden_letters = []
-                        if missplaced_letters == "_":
-                            missplaced_letters = []
-                        choosen_word, cond = main_solver(known_letters, forbidden_letters, missplaced_letters)
-                    print("The following word is the correct answer.\n", f"It was {choosen_word}.\n")
-                    break
-                except ValueError as e:
-                    print(f"Syntax error: {e}")
-                sutom_algo_game_mode(solver_input)
-                    
-                
-def sutom_algo_game_mode_init():
-    solver_input = str(input("What does the word you're looking for look like?\n"
-                             "(Enter \"help\" to see the required syntax)\n"))
-    if solver_input == "help":
-        print("Syntax:\n",
-              "Enter the known letters and the unknown letters as \"_\"\n\n")
-        return None
-    else:
-        return solver_input
-    
-def sutom_algo_game_mode(solver_input):
-    if solver_input == "help":
-        print("Syntax:\n",
-            "Enter the known letters and the unknown letters as \"_\"\n",
-            "Enter forbidden letters all together.\n",
-            "Enter misplaced letters all together.\n"
-            "Separate these two parts by a space \" \".\n")
-     
 
 
 def main_game_mode(user_input=None):
@@ -145,7 +98,35 @@ def main_game_mode(user_input=None):
 
     elif user_input == "S":
         print("Launching the solver.\n")
-        sutom_algo_game_mode()
+        while True:
+            solver_input = str(input("What does the word you're looking for look like?\n"
+                                      "(Enter \"help\" to see the required syntax)\n"))
+            if solver_input == "help":
+                print("Syntax:\n",
+                      "Enter the known letters and the unknown letters as \"_\"\n",
+                      "Enter forbidden letters all together.\n",
+                      "Enter misplaced letters all together.\n"
+                      "Separate these two parts by a space \" \".\n")
+            else:
+                try:
+                    check_syntax_init(solver_input)
+                    known_letters = solver_input
+                    choosen_word, cond = main_solver(known_letters)
+                    while not cond:
+                        print(f"The word you're looking for looks like:\n{choosen_word}")
+                        solver_input = str(input("What does the word you're looking for look like?\n"))
+                        check_syntax_in_loop(solver_input)
+                        parts = solver_input.split(" ")
+                        known_letters, forbidden_letters, missplaced_letters = parts
+                        if forbidden_letters == "_":
+                            forbidden_letters = []
+                        if missplaced_letters == "_":
+                            missplaced_letters = []
+                        choosen_word, cond = main_solver(known_letters, forbidden_letters, missplaced_letters)
+                    print("The following word is the correct answer.\n", f"It was {choosen_word}.\n")
+                    break
+                except ValueError as e:
+                    print(f"Syntax error: {e}")
 
     elif user_input == "A":
         main_solver()
